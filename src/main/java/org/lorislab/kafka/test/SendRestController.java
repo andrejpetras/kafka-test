@@ -1,8 +1,10 @@
 package org.lorislab.kafka.test;
 
-import io.smallrye.reactive.messaging.annotations.Channel;
-import io.smallrye.reactive.messaging.annotations.Emitter;
-import io.smallrye.reactive.messaging.kafka.KafkaMessage;
+
+
+import io.smallrye.reactive.messaging.kafka.KafkaRecord;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -16,7 +18,7 @@ public class SendRestController {
 
     @Inject
     @Channel("send")
-    Emitter<KafkaMessage<String, Event>> send;
+    Emitter<KafkaRecord<String, Event>> send;
 
     @GET
     @Path("{topic}/{guid}")
@@ -24,7 +26,7 @@ public class SendRestController {
         Event event  = new Event();
         event.guid = guid;
         event.data = UUID.randomUUID().toString();
-        send.send(KafkaMessage.of(topic, event.guid, event));
+        send.send(KafkaRecord.of(topic, event.guid, event));
         return Response.ok().build();
     }
 
