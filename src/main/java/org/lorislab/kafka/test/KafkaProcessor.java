@@ -20,7 +20,11 @@ public class KafkaProcessor {
     @Incoming("in")
     @Acknowledgment(Acknowledgment.Strategy.MANUAL)
     public CompletionStage<Void> process(KafkaRecord<String, String> message) {
-        log.info("Message: {}", message.getPayload());
+        if (!message.getPayload().startsWith("stop")) {
+            log.info("Message 'message.ack()' {}", message.getPayload());
+            return message.ack();
+        }
+        log.info("Message 'CompletableFuture.completedFuture(null)' {}", message.getPayload());
         return CompletableFuture.completedFuture(null);
     }
 
@@ -28,9 +32,6 @@ public class KafkaProcessor {
 //    @Acknowledgment(Acknowledgment.Strategy.MANUAL)
 //    public CompletionStage<Void> process(KafkaRecord<String, String> message) {
 //        log.info("Message: {}", message.getPayload());
-//        if (!message.getPayload().startsWith("stop")) {
-//            return message.ack();
-//        }
 //        return CompletableFuture.completedFuture(null);
 //    }
 
