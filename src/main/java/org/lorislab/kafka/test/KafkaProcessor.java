@@ -3,10 +3,13 @@ package org.lorislab.kafka.test;
 import io.smallrye.reactive.messaging.kafka.KafkaRecord;
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.reactivestreams.Subscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 @ApplicationScoped
@@ -18,8 +21,18 @@ public class KafkaProcessor {
     @Acknowledgment(Acknowledgment.Strategy.MANUAL)
     public CompletionStage<Void> process(KafkaRecord<String, String> message) {
         log.info("Message: {}", message.getPayload());
-        return null;
+        return CompletableFuture.completedFuture(null);
     }
+
+//    @Incoming("in")
+//    @Acknowledgment(Acknowledgment.Strategy.MANUAL)
+//    public CompletionStage<Void> process(KafkaRecord<String, String> message) {
+//        log.info("Message: {}", message.getPayload());
+//        if (!message.getPayload().startsWith("stop")) {
+//            return message.ack();
+//        }
+//        return CompletableFuture.completedFuture(null);
+//    }
 
 //    @Incoming("in")
 //    @Acknowledgment(Acknowledgment.Strategy.MANUAL)
