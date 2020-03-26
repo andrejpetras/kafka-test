@@ -20,30 +20,12 @@ public class KafkaProcessor {
     @Incoming("in")
     @Acknowledgment(Acknowledgment.Strategy.MANUAL)
     public CompletionStage<Void> process(KafkaRecord<String, String> message) {
-        if (!message.getPayload().startsWith("stop")) {
-            log.info("Message 'message.ack()' {}", message.getPayload());
-            return message.ack();
+        if (message.getPayload().startsWith("stop")) {
+            log.info("Message 'CompletableFuture.completedFuture(null)' {}", message.getPayload());
+            return CompletableFuture.completedFuture(null);
         }
-        log.info("Message 'CompletableFuture.completedFuture(null)' {}", message.getPayload());
-        return CompletableFuture.completedFuture(null);
+        log.info("Message 'message.ack()' {}", message.getPayload());
+        return message.ack();
     }
-
-//    @Incoming("in")
-//    @Acknowledgment(Acknowledgment.Strategy.MANUAL)
-//    public CompletionStage<Void> process(KafkaRecord<String, String> message) {
-//        log.info("Message: {}", message.getPayload());
-//        return CompletableFuture.completedFuture(null);
-//    }
-
-//    @Incoming("in")
-//    @Acknowledgment(Acknowledgment.Strategy.MANUAL)
-//    public Subscriber<KafkaRecord<String, String>> process2() {
-//        return ReactiveStreams.<KafkaRecord<String, String>>builder()
-//                .map(m -> {
-//                    log.info("Message: {}", m.getPayload());
-//                    return m;
-//                }).findFirst()
-//                .build();
-//    }
 
 }
